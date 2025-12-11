@@ -1,23 +1,31 @@
 **Hospitals need efficient systems to manage patients, doctors, appointments, and treatments. Currently, many hospitals use manual registers or disconnected software, which makes it difficult to manage records, avoid scheduling conflicts, and track patient history.**
-**We build a Hospital Management System, an one stop web application that allows Admins, Doctors, and Patients to interact with the system based on their roles.
+**We build a Hospital Management System, an one stop web application that allows Admins, Doctors, and Patients to interact with the system based on their roles.**
 
 # Roles & Functionalities
 
 1. Admin (Hospital Staff)
 -- Admin is the pre-existing superuser of the application
+   
 -- Can add, update, and delete doctor profiles (name, specialization, availability).
+
 -- Can view and manage all appointments.
+
 -- Can search for patients or doctors by name/specialization.
 
-2. Doctor
+3. Doctor
 -- Can log in to view assigned appointments.
+   
 -- Can mark a patient’s visit as completed and enter diagnosis & treatment notes.
+
 -- Can view patient history (previous diagnoses & prescriptions).
    
-3. Patient
+5. Patient
 -- Can register, log in, and update their profile.
+   
 -- Can search for doctors by specialization and availability.
+
 -- Can book, reschedule, or cancel an appointment.
+
 -- Can view their own appointment history and treatment details.
    
 # Key Terminologies
