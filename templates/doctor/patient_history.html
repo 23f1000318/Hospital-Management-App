@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Patient History{% endblock %}
+
+{% block content %}
+<h2>Patient History: {{ patient.name }}</h2>
+
+<div class="card mt-4">
+    <div class="card-body">
+        <h5>Patient Information</h5>
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Name:</strong> {{ patient.name }}</p>
+                <p><strong>Age:</strong> {{ patient.age }}</p>
+                <p><strong>Gender:</strong> {{ patient.gender }}</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Email:</strong> {{ patient.email }}</p>
+                <p><strong>Phone:</strong> {{ patient.phone }}</p>
+                <p><strong>Address:</strong> {{ patient.address }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h5>Medical History</h5>
+    </div>
+    <div class="card-body">
+        {% if appointments %}
+        {% for appointment in appointments %}
+        <div class="border p-3 mb-3">
+            <h6>Visit Date: {{ appointment.date }} at {{ appointment.time }}</h6>
+            {% if appointment.treatment %}
+            <p><strong>Diagnosis:</strong> {{ appointment.treatment.diagnosis }}</p>
+            <p><strong>Prescription:</strong> {{ appointment.treatment.prescription }}</p>
+            {% if appointment.treatment.notes %}
+            <p><strong>Notes:</strong> {{ appointment.treatment.notes }}</p>
+            {% endif %}
+            <p class="text-muted"><small>Recorded on: {{ appointment.treatment.created_at.strftime('%Y-%m-%d %H:%M') }}</small></p>
+            {% else %}
+            <p class="text-muted">No treatment details recorded</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+        {% else %}
+        <p class="text-muted">No medical history available</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="mt-3">
+    <a href="{{ url_for('doctor_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+{% endblock %}

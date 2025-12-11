@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Book Appointment{% endblock %}
+
+{% block content %}
+<h2>Book Appointment with Dr. {{ doctor.name }}</h2>
+
+<div class="card mt-4">
+    <div class="card-body">
+        <h5>Doctor Details</h5>
+        <p><strong>Name:</strong> Dr. {{ doctor.name }}</p>
+        <p><strong>Department:</strong> {{ doctor.department.name }}</p>
+        <p><strong>Experience:</strong> {{ doctor.experience_years }} years</p>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h5>Select Appointment Slot</h5>
+    </div>
+    <div class="card-body">
+        {% if availability %}
+        
+        <!-- Step 1: Select Date -->
+        <form method="GET" action="{{ url_for('patient_book_appointment', doctor_id=doctor.id) }}">
+            <div class="mb-3">
+                <label for="selected_date" class="form-label"><strong>Step 1:</strong> Select Date</label>
+                <select class="form-select" id="selected_date" name="selected_date" onchange="this.form.submit()" required>
+                    <option value="">Choose a date</option>
+                    {% for slot in availability %}
+                    {% set start_parts = slot.start_time.split(':') %}
+                    {% set end_parts = slot.end_time.split(':') %}
+                    {% set start_hour = start_parts[0]|int %}
+                    {% set start_min = start_parts[1]|int if start_parts|length > 1 else 0 %}
+                    {% set end_hour = end_parts[0]|int %}
+                    {% set end_min = end_parts[1]|int if end_parts|length > 1 else 0 %}
+                    <option value="{{ slot.date }}" {% if selected_date == slot.date|string %}selected{% endif %}>
+                        {{ slot.date.strftime('%A, %B %d, %Y') }} 
+                        ({% if start_hour == 0 %}12:{{ '%02d'|format(start_min) }} AM{% elif start_hour < 12 %}{{ start_hour }}:{{ '%02d'|format(start_min) }} AM{% elif start_hour == 12 %}12:{{ '%02d'|format(start_min) }} PM{% else %}{{ start_hour - 12 }}:{{ '%02d'|format(start_min) }} PM{% endif %}
+                        - 
+                        {% if end_hour == 0 %}12:{{ '%02d'|format(end_min) }} AM{% elif end_hour < 12 %}{{ end_hour }}:{{ '%02d'|format(end_min) }} AM{% elif end_hour == 12 %}12:{{ '%02d'|format(end_min) }} PM{% else %}{{ end_hour - 12 }}:{{ '%02d'|format(end_min) }} PM{% endif %})
+                    </option>
+                    {% endfor %}
+                </select>
+                <noscript>
+                    <button type="submit" class="btn btn-sm btn-secondary mt-2">Load Time Slots</button>
+                </noscript>
+            </div>
+        </form>
+        
+        <!-- Step 2: Select Time (shown only after date is selected) -->
+        {% if selected_date and time_slots %}
+        <form method="POST" action="{{ url_for('patient_book_appointment', doctor_id=doctor.id) }}">
+            <input type="hidden" name="date" value="{{ selected_date }}">
+            
+            <div class="mb-3">
+                <label for="time" class="form-label"><strong>Step 2:</strong> Select Time</label>
+                <select class="form-select" id="time" name="time" required>
+                    <option value="">Choose a time slot</option>
+                    {% for slot in time_slots %}
+                    <option value="{{ slot.value }}">{{ slot.display }}</option>
+                    {% endfor %}
+                </select>
+                <small class="text-muted">Available 30-minute slots</small>
+            </div>
+            
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a href="{{ url_for('patient_doctors', department_id=doctor.department_id) }}" 
+                   class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Book Appointment</button>
+            </div>
+        </form>
+        {% elif selected_date %}
+        <div class="alert alert-warning">
+            <p class="mb-0">No time slots available for the selected date. Please choose another date.</p>
+        </div>
+        {% endif %}
+        
+        {% else %}
+        <p class="text-muted">This doctor has no available slots for the next 7 days. Please check again later.</p>
+        <a href="{{ url_for('patient_doctors', department_id=doctor.department_id) }}" 
+           class="btn btn-secondary">Back to Doctors</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

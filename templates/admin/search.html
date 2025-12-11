@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Search{% endblock %}
+
+{% block content %}
+<h2>Search Doctors and Patients</h2>
+
+<div class="card mt-4">
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('admin_search') }}">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="search_type" class="form-label">Search Type</label>
+                    <select class="form-select" id="search_type" name="search_type" required>
+                        <option value="">Select Type</option>
+                        <option value="doctor" {% if search_type == 'doctor' %}selected{% endif %}>Doctor</option>
+                        <option value="patient" {% if search_type == 'patient' %}selected{% endif %}>Patient</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="search_query" class="form-label">Search Query</label>
+                    {% if search_type == 'doctor' %}
+                        <input type="text" class="form-control" id="search_query" name="search_query" 
+                               placeholder="Enter doctor name or specialization (e.g., Cardiology, Dr. Smith)..." 
+                               value="{{ search_query or '' }}" required>
+                        <small class="text-muted">Search by doctor name or department specialization</small>
+                    {% elif search_type == 'patient' %}
+                        <input type="text" class="form-control" id="search_query" name="search_query" 
+                               placeholder="Enter patient name or phone number..." 
+                               value="{{ search_query or '' }}" required>
+                        <small class="text-muted">Search by patient name or phone number</small>
+                    {% else %}
+                        <input type="text" class="form-control" id="search_query" name="search_query" 
+                               placeholder="Please select search type first..." 
+                               value="{{ search_query or '' }}" required>
+                        <small class="text-muted">Select search type to continue</small>
+                    {% endif %}
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label class="form-label">&nbsp;</label>
+                    <button type="submit" class="btn btn-primary w-100">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if results is defined %}
+<div class="mt-4">
+    <h4>Search Results</h4>
+    {% if search_type == 'doctor' %}
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Department</th>
+                    <th>Experience</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for doctor in results %}
+                <tr>
+                    <td>{{ doctor.id }}</td>
+                    <td>Dr. {{ doctor.name }}</td>
+                    <td>{{ doctor.email }}</td>
+                    <td>{{ doctor.phone }}</td>
+                    <td>{{ doctor.department.name }}</td>
+                    <td>{{ doctor.experience_years }} years</td>
+                    <td>
+                        <a href="{{ url_for('admin_edit_doctor', id=doctor.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-3">No doctors found matching your search</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% elif search_type == 'patient' %}
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for patient in results %}
+                <tr>
+                    <td>{{ patient.id }}</td>
+                    <td>{{ patient.name }}</td>
+                    <td>{{ patient.email }}</td>
+                    <td>{{ patient.phone }}</td>
+                    <td>{{ patient.age }}</td>
+                    <td>{{ patient.gender }}</td>
+                    <td>
+                        <a href="{{ url_for('admin_edit_patient', id=patient.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                        <a href="{{ url_for('admin_patient_history', id=patient.id) }}" class="btn btn-sm btn-info">View History</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-3">No patients found matching your search</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

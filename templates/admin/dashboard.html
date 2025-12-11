@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Admin Dashboard</h2>
+
+<div class="row mt-4 g-3">
+    <div class="col-md-4">
+        <div class="card stat-card text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;">
+            <div class="card-body text-center py-5" style="background: transparent !important;">
+                <h5 class="card-title mb-3 fw-bold">Total Doctors</h5>
+                <h1 style="font-size: 4rem; font-weight: bold; margin: 0;">{{ total_doctors }}</h1>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card stat-card text-white" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;">
+            <div class="card-body text-center py-5" style="background: transparent !important;">
+                <h5 class="card-title mb-3 fw-bold">Total Patients</h5>
+                <h1 style="font-size: 4rem; font-weight: bold; margin: 0;">{{ total_patients }}</h1>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card stat-card text-white" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;">
+            <div class="card-body text-center py-5" style="background: transparent !important;">
+                <h5 class="card-title mb-3 fw-bold">Total Appointments</h5>
+                <h1 style="font-size: 4rem; font-weight: bold; margin: 0;">{{ total_appointments }}</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-12">
+        <div class="card shadow">
+            <div class="card-header text-white" style="background-color: #212529;">
+                <h4 class="mb-0">Upcoming Appointments</h4>
+            </div>
+            <div class="card-body" style="background-color: white !important;">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover mb-0">
+                        <thead style="background-color: #212529; color: white;">
+                            <tr>
+                                <th>ID</th>
+                                <th>Patient</th>
+                                <th>Doctor</th>
+                                <th>Department</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appointment in upcoming_appointments %}
+                            <tr>
+                                <td>{{ appointment.id }}</td>
+                                <td>{{ appointment.patient.name }}</td>
+                                <td>{{ appointment.doctor.name }}</td>
+                                <td>{{ appointment.doctor.department.name }}</td>
+                                <td>{{ appointment.date }}</td>
+                                <td>{{ appointment.time }}</td>
+                                <td><span class="status-{{ appointment.status.lower() }}">{{ appointment.status }}</span></td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-4">No upcoming appointments</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

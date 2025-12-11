@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Search Doctors{% endblock %}
+
+{% block content %}
+<h2>Search for Doctors</h2>
+
+<div class="card mt-4">
+    <div class="card-body">
+        <form method="GET" action="{{ url_for('patient_search') }}">
+            <div class="row">
+                <div class="col-md-10 mb-3">
+                    <label for="query" class="form-label">Search by Doctor Name or Specialization</label>
+                    <input type="text" class="form-control" id="query" name="query" 
+                           placeholder="Enter doctor name or department (e.g., Cardiology, Dr. Smith)..." 
+                           value="{{ query or '' }}" required>
+                    <small class="text-muted">Search by doctor's name or medical specialization</small>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label class="form-label">&nbsp;</label>
+                    <button type="submit" class="btn btn-primary w-100">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if searched %}
+<div class="mt-4">
+    <h4>Search Results</h4>
+    {% if results %}
+    <div class="row">
+        {% for doctor in results %}
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Dr. {{ doctor.name }}</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Specialization:</strong> {{ doctor.department.name }}</p>
+                    <p><strong>Experience:</strong> {{ doctor.experience_years }} years</p>
+                    <p><strong>Email:</strong> {{ doctor.email }}</p>
+                    <p><strong>Phone:</strong> {{ doctor.phone }}</p>
+                    <a href="{{ url_for('patient_doctors', department_id=doctor.department_id) }}" 
+                       class="btn btn-primary btn-sm">View Availability & Book</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <p class="mb-0">No doctors found matching "{{ query }}". Try searching by department name (Cardiology, Neurology, etc.) or doctor's name.</p>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}
