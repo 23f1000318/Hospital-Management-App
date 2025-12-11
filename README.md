@@ -4,6 +4,7 @@
 # Roles & Functionalities
 
 1. Admin (Hospital Staff)
+   
 -- Admin is the pre-existing superuser of the application
    
 -- Can add, update, and delete doctor profiles (name, specialization, availability).
@@ -12,14 +13,16 @@
 
 -- Can search for patients or doctors by name/specialization.
 
-3. Doctor
+2. Doctor
+   
 -- Can log in to view assigned appointments.
    
 -- Can mark a patient’s visit as completed and enter diagnosis & treatment notes.
 
 -- Can view patient history (previous diagnoses & prescriptions).
    
-5. Patient
+3. Patient
+   
 -- Can register, log in, and update their profile.
    
 -- Can search for doctors by specialization and availability.
